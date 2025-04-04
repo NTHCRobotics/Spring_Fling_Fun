@@ -6,10 +6,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-
-@TeleOp(name="Pew_Pew_Monkey_Goes_Boom", group = "Monkey_Goes_Boom")
+@TeleOp(name="Pew_Pew_Sample_Goes_Boom", group = "Sample_Goes_Boom")
 public class Pew_Pew_Boom extends OpMode {
 private DcMotorEx missleLaucher;
 private CRServo liftBoom;
@@ -18,6 +18,7 @@ private DcMotorEx sampleExplosion2;
 private Servo holdBoom;
 private CRServo armBoom;
 
+private final ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void init(){
@@ -30,7 +31,7 @@ private CRServo armBoom;
 
         sampleExplosion.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         sampleExplosion2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        sampleExplosion.setDirection(DcMotorSimple.Direction.FORWARD);
+        sampleExplosion.setDirection(DcMotorSimple.Direction.REVERSE);
         sampleExplosion2.setDirection(DcMotorSimple.Direction.FORWARD);
 
     }
@@ -43,7 +44,11 @@ private CRServo armBoom;
     public void loop(){
     Kaboom();
     MoveMissle();
+    HoldKaboom();
     MissleAim();
+
+
+
     }
 
 
@@ -55,32 +60,42 @@ private CRServo armBoom;
             sampleExplosion.setPower(0);
             sampleExplosion2.setPower(0);
         }
-        if (gamepad1.right_trigger > 0) {
+
+
+    }
+
+    public void HoldKaboom(){
+        if (gamepad1.right_bumper) {
             holdBoom.setPosition(1);
+            runtime.reset();
+
         }
-        else{
+        if (runtime.seconds() > 0.3){
             holdBoom.setPosition(0);
         }
     }
 
     public void MoveMissle(){
         double x = -gamepad1.left_stick_x;
+        double speedmod = 1.5;
 
-        missleLaucher.setPower(x);
+        missleLaucher.setPower(x*speedmod);
     }
 
     public void MissleAim(){
         if (gamepad1.dpad_up){
-            liftBoom.setPower(1);
-            armBoom.setPower(1);
+            liftBoom.setPower(0.01);
+            armBoom.setPower(0.01);
         } else if (gamepad1.dpad_down) {
-            liftBoom.setPower(-1);
-            armBoom.setPower(-1);
+            liftBoom.setPower(-0.01);
+            armBoom.setPower(-0.01);
         }
-        else {
+        else if (gamepad1.dpad_left){
             liftBoom.setPower(0);
-            armBoom.setPower(0);
+       armBoom.setPower(0);
         }
+
+
     }
 
 

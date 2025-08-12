@@ -22,7 +22,7 @@ private final ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void init(){
-        wheel = hardwareMap.get(DcMotorEx.class, "white");
+        wheel = hardwareMap.get(DcMotorEx.class, "wheel");
         liftServo1 = hardwareMap.get(CRServo.class, "liftservo1");
         sampleExplosion = hardwareMap.get(DcMotorEx.class, "sampleExplosion");
         sampleExplosion2 = hardwareMap.get(DcMotorEx.class, "sampleExplosion2");
